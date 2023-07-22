@@ -2,7 +2,7 @@ version: 2.1
 
 default_runner: &default_runner
   docker: 
-    - image: cimg/node:17.2.0
+    - image: cimg/node:13.8.0
       
 jobs:
   build:
