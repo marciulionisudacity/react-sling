@@ -9,24 +9,30 @@ jobs:
     <<: *default_runner 
     steps:
       - checkout
+      - run: npm i
       - run: npm run lint
-      - persist_to_workspace:
-          root: ~/
+      - save_cache:
+          key: "npm-packages"
           paths: 
-            - output.txt
-
+            - /src/node_modules
   test:
     <<: *default_runner 
     steps:
-      - attach_workspace:
-          at: ~/
+      - checkout
+      - restore_cache:
+        keys: 
+          - "npm-packages"
+      - run: npm i 
       - run: npm run test
-
 
   analyze: 
     <<: *default_runner 
     steps:
-      - run: npm audit  
+      - checkout
+      - restore_cache:
+        keys: 
+          - "npm-packages"
+      - run: npm audit
         
 
 workflows:
