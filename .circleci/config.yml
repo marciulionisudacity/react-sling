@@ -1,0 +1,41 @@
+version: 2.1
+
+default_runner: &default_runner
+  docker: 
+    - image: cimg/node:17.2.0
+      
+jobs:
+  build:
+    <<: *default_runner 
+    steps:
+      - checkout
+      - run: npm run lint
+      - persist_to_workspace:
+          root: ~/
+          paths: 
+            - output.txt
+
+  test:
+    <<: *default_runner 
+    steps:
+      - attach_workspace:
+          at: ~/
+      - run: npm run test
+
+
+  analyze: 
+    <<: *default_runner 
+    steps:
+      - run: npm audit  
+        
+
+workflows:
+  my-workflow:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - analyze:
+          requires:
+            - test          
